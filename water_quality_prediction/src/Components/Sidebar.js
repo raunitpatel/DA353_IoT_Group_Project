@@ -22,7 +22,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <div>
             {/* Sidebar Toggle Button */}
             <button
-                className="w3-button w3-theme-d5  w3-hover-none"
+                className="w3-button  w3-hover-none"
                 onClick={toggleSidebar}
                 style={{
                     position: "fixed",
@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     height: "100%",
                     overflowX: "hidden",
                     transition: "width 0.5s",
-                    paddingTop: "20px",
+                    paddingTop: "4px",
                 }}
             >
                 <h3 className="w3-bar-item w3-center">Navigation</h3>
