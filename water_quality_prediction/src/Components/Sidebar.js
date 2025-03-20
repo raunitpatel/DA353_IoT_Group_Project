@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react"; // Icons
+import { Menu, X, ChevronDown, ChevronUp } from "lucide-react"; // Added Home Icon
 
 const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -32,7 +32,9 @@ const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
                     background: "transparent",
                     border: "none",
                     color: "white",
-                    top: "2.1vh",
+                    display: "flex",
+                    alignItems: "center",
+                    height: "10vh",
                 }}
             >
                 {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -47,16 +49,29 @@ const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
                     height: "100vh",
                     overflowX: "hidden",
                     transition: "width 0.5s",
-                    paddingTop: "9.3vh",
+                    paddingTop: "10vh",
                 }}
             >
+                {/* Home Button */}
+                <button
+                    className="w3-button w3-block w3-left-align w3-theme-d1 w3-padding-large"
+                    onClick={() => onAreaSelect(null, null)}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                    }}
+                >
+                    HOME
+                </button>
 
+                {/* Area List with Dropdown */}
                 {menuItems.map((menu, index) => {
                     const isDropdownOpen = openDropdown === index;
                     return (
                         <div key={index}>
                             <button
-                                className="w3-button w3-block w3-left-align w3-theme-d1  w3-padding-large"
+                                className="w3-button w3-block w3-left-align w3-theme-d1 w3-padding-large"
                                 onClick={() => toggleDropdown(index)}
                             >
                                 {menu.title}
