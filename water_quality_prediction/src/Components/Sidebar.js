@@ -28,11 +28,11 @@ const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
                 onClick={toggleSidebar}
                 style={{
                     position: "fixed",
-                    top: "15px",
                     zIndex: "1000",
                     background: "transparent",
                     border: "none",
-                    color: "white"
+                    color: "white",
+                    top: "2.1vh",
                 }}
             >
                 {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -44,20 +44,19 @@ const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
                 style={{
                     width: isOpen ? "250px" : "0",
                     position: "fixed",
-                    height: "100%",
+                    height: "100vh",
                     overflowX: "hidden",
                     transition: "width 0.5s",
-                    paddingTop: "4px",
+                    paddingTop: "9.3vh",
                 }}
             >
-                <h3 className="w3-bar-item w3-center">Navigation</h3>
 
                 {menuItems.map((menu, index) => {
                     const isDropdownOpen = openDropdown === index;
                     return (
                         <div key={index}>
                             <button
-                                className="w3-button w3-block w3-left-align w3-white w3-padding-large"
+                                className="w3-button w3-block w3-left-align w3-theme-d1  w3-padding-large"
                                 onClick={() => toggleDropdown(index)}
                             >
                                 {menu.title}
