@@ -34,7 +34,7 @@ mqttClient.on('error', function (error) {
     console.error('MQTT Error:', error);
 });
 
-async function insertIntoNeonSQL(data) {
+async function insertIntoSQL(data) {
     try {
         const query = `
             INSERT INTO water_quality (
@@ -73,8 +73,7 @@ mqttClient.on('message', function (topic, message) {
 
         console.log("Parsed Data:", data);
 
-        // Insert data into NeonSQL
-        insertIntoNeonSQL(data);
+        insertIntoSQL(data);
     } catch (error) {
         console.error('Message Parsing Error:', error);
     }

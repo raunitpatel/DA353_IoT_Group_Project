@@ -21,7 +21,7 @@ def get_unique_areas():
     area_dict = {}
     for area, area_name in records:
         if area not in area_dict:
-            area_dict[area] = []
+            area_dict[area]  = []
         area_dict[area].append(area_name)
 
     menu_items = [{"title": area, "items": area_names} for area, area_names in area_dict.items()]
