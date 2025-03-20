@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer>
             <div className="w3-theme-d3 w3-container">
-                <h5>Stay Connected with Water Quality Prediction</h5>
+                <h5>Stay Connected with H2O | Insights</h5>
             </div>
             {/* <div className="w3-theme-d5 w3-padding-8 w3-container w3-row-padding w3-medium">
                 <div className="w3-third w3-center w3-container w3-flex w3-center" style={{ minHeight: "150px", display: "flex", alignItems: "center", justifyContent: "center" }}>

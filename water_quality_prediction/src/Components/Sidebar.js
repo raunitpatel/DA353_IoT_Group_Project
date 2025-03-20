@@ -1,34 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react"; // Icons
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = ({ isOpen, setIsOpen, onAreaSelect }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [menuItems, setMenuItems] = useState([]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/areas")
+            .then((res) => res.json())
+            .then(setMenuItems)
+            .catch(console.error);
+    }, []);
 
     // Toggle sidebar visibility
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     // Toggle dropdown menus
     const toggleDropdown = (index) => {
-        setOpenDropdown(openDropdown === index ? null : index);
+        setOpenDropdown(prevIndex => prevIndex === index ? null : index);
     };
-
-    const menuItems = [
-        { title: "Hostels", items: ["Hostel A", "Hostel B", "Hostel C"] },
-        { title: "Core", items: ["Lab 1", "Lab 2", "Main Building"] },
-        { title: "Quarters", items: ["Block A", "Block B", "Block C"] },
-    ];
 
     return (
         <div>
             {/* Sidebar Toggle Button */}
             <button
-                className="w3-button  w3-hover-none"
+                className="w3-button w3-hover-none"
                 onClick={toggleSidebar}
                 style={{
                     position: "fixed",
                     top: "15px",
                     zIndex: "1000",
-                    background: "transparent", // No white hover effect
+                    background: "transparent",
                     border: "none",
                     color: "white"
                 }}
@@ -50,48 +52,52 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             >
                 <h3 className="w3-bar-item w3-center">Navigation</h3>
 
-                {menuItems.map((menu, index) => (
-                    <div key={index}>
-                        <button
-                            className="w3-button w3-block w3-left-align w3-white w3-padding-large"
-                            onClick={() => toggleDropdown(index)}
-                        >
-                            {menu.title}
-                            {openDropdown === index ? (
-                                <ChevronUp size={20} className="w3-right" />
-                            ) : (
-                                <ChevronDown size={20} className="w3-right" />
-                            )}
-                        </button>
+                {menuItems.map((menu, index) => {
+                    const isDropdownOpen = openDropdown === index;
+                    return (
+                        <div key={index}>
+                            <button
+                                className="w3-button w3-block w3-left-align w3-white w3-padding-large"
+                                onClick={() => toggleDropdown(index)}
+                            >
+                                {menu.title}
+                                {isDropdownOpen ? (
+                                    <ChevronUp size={20} className="w3-right" />
+                                ) : (
+                                    <ChevronDown size={20} className="w3-right" />
+                                )}
+                            </button>
 
-                        {/* Dropdown items */}
-                        <div
-                            className="w3-container"
-                            style={{
-                                display: openDropdown === index ? "block" : "none",
-                                paddingLeft: "20px",
-                                borderLeft: "4px solid #333",
-                            }}
-                        >
-                            {menu.items.map((item, i) => (
-                                <button
-                                    key={i}
-                                    className="w3-button w3-block w3-left-align w3-theme-d5"
+                            {/* Dropdown items */}
+                            {isDropdownOpen && (
+                                <div
+                                    className="w3-container"
                                     style={{
-                                        margin: "5px 0", 
-                                        padding: "10px",
-                                        textAlign: "left", 
-                                        border: "none",
-                                        background: "transparent",
+                                        paddingLeft: "20px",
+                                        borderLeft: "4px solid #333",
                                     }}
-                                    onClick={() => console.log(`${item} clicked`)} // Replace with actual logic
                                 >
-                                    {item}
-                                </button>
-                            ))}
+                                    {menu.items.map((item, i) => (
+                                        <button
+                                            key={i}
+                                            className="w3-button w3-block w3-left-align w3-theme-d5"
+                                            style={{
+                                                margin: "5px 0",
+                                                padding: "10px",
+                                                textAlign: "left",
+                                                border: "none",
+                                                background: "transparent",
+                                            }}
+                                            onClick={() => onAreaSelect(menu.title, item)}
+                                        >
+                                            {item}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
