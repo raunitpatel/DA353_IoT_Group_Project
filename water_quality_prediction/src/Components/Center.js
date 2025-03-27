@@ -11,6 +11,16 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
         "timestamp", "block", "chlorine", "fluoride", "conductivity", "ph", "totaldissolvedsolids", "turbidity", "watertemperature", "target"
     ];
 
+    const standards = {
+        ph: { min: 7.0, max: 8.5 },
+        chlorine: { min: 0.2, max: 4.0 },
+        fluoride: { min: 0.5, max: 1.5 },
+        conductivity: { min: 0, max: 1000 },
+        turbidity: { min: 0, max: 5 },
+        totaldissolvedsolids: { min: 0, max: 500 },
+        watertemperature: { min: 5, max: 35 }
+    };
+
     const filteredData = areaData.map(row =>
         Object.fromEntries(Object.entries(row).filter(([key]) => requiredColumns.includes(key)))
     );
@@ -19,7 +29,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     const uniqueBlocks = [...new Set(areaData.map(row => row.block))];
 
     const linePlotData = uniqueBlocks.map(block => ({
-        x: areaData.filter(row => row.block === block).map(row => row.timestamp.split(" ")[0]),
+        x: areaData.filter(row => row.block === block).map(row => row.timestamp),
         y: areaData.filter(row => row.block === block).map(row => row[selectedColumn]),
         mode: "lines",
         name: block
@@ -36,6 +46,24 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
         },
         name: row.block
     }));
+
+    // Adding standard min and max reference lines
+    const standardLines = standards[selectedColumn] ? [
+        {
+            x: [areaData[0]?.timestamp, areaData[areaData.length - 1]?.timestamp],
+            y: [standards[selectedColumn].min, standards[selectedColumn].min],
+            mode: "lines",
+            line: { color: "red", dash: "dash" },
+            name: "Min Standard"
+        },
+        {
+            x: [areaData[0]?.timestamp, areaData[areaData.length - 1]?.timestamp],
+            y: [standards[selectedColumn].max, standards[selectedColumn].max],
+            mode: "lines",
+            line: { color: "green", dash: "dash" },
+            name: "Max Standard"
+        }
+    ] : [];
 
     return (
         <div style={{ height: "85vh", overflowY: "auto", overflowX: "auto", width: "100%" }}>
@@ -55,7 +83,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                                 ))}
                             </Select>
                             <Plot
-                                data={linePlotData}
+                                data={[...linePlotData, ...standardLines]}
                                 layout={{ title: "Water Quality Trends", xaxis: { title: "Timestamp" }, yaxis: { title: selectedColumn } }}
                                 style={{ width: "100%", height: "400px" }}
                             />
@@ -84,7 +112,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                         />
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "center", padding: "10px", }}>
+                    <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
                         <Pagination
                             current={currentPage}
                             pageSize={pageSize}
@@ -100,21 +128,18 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                 <div
                     style={{
                         textAlign: "center",
-                        // padding: "50px",
                         backgroundImage: "url('background_imag.jpg')",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",
                         width: "100%",
                         height: "100%",
-                        // color: "white",
                         textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
                     }}
                 >
-                    <h1 style = {{padding: "0", margin: "0"}}>Welcome to Water Quality Dashboard</h1>
+                    <h1 style={{ padding: "0", margin: "0" }}>Welcome to Water Quality Dashboard</h1>
                     <p>Select an area from the sidebar to view detailed water quality information.</p>
                 </div>
-
             )}
         </div>
     );
