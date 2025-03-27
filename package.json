@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "assert": "^2.1.0",
+    "buffer": "^6.0.3",
+    "plotly.js": "^3.0.1",
+    "stream-browserify": "^3.0.0"
+  }
+}

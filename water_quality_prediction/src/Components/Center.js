@@ -8,7 +8,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     const pageSize = 5;
 
     const requiredColumns = [
-        "timestamp", "block", "chlorine","fluoride", "conductivity", "ph", "totaldissolvedsolids", "turbidity", "watertemperature", "target"
+        "timestamp", "block", "chlorine", "fluoride", "conductivity", "ph", "totaldissolvedsolids", "turbidity", "watertemperature", "target"
     ];
 
     const filteredData = areaData.map(row =>
@@ -19,14 +19,14 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     const uniqueBlocks = [...new Set(areaData.map(row => row.block))];
 
     const linePlotData = uniqueBlocks.map(block => ({
-        x: areaData.filter(row => row.block === block).map(row => row.timestamp.split(" ")[0]), 
+        x: areaData.filter(row => row.block === block).map(row => row.timestamp.split(" ")[0]),
         y: areaData.filter(row => row.block === block).map(row => row[selectedColumn]),
         mode: "lines",
         name: block
     }));
 
     const bubblePlotData = areaData.map(row => ({
-        x: row.timestamp.split(" ")[0], 
+        x: row.timestamp.split(" ")[0],
         y: row[selectedColumn],
         mode: "markers",
         marker: {
@@ -38,7 +38,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     }));
 
     return (
-        <div style={{ height: "85vh", overflowY: "auto", overflowX: "auto", padding: "20px", width: "100%" }}>
+        <div style={{ height: "85vh", overflowY: "auto", overflowX: "auto", width: "100%" }}>
             {selectedArea && areaData.length > 0 ? (
                 <>
                     <h1 style={{ textAlign: "center" }}>{selectedAreaName} Water Quality Data</h1>
@@ -84,7 +84,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                         />
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "center",padding: "10px", }}>
+                    <div style={{ display: "flex", justifyContent: "center", padding: "10px", }}>
                         <Pagination
                             current={currentPage}
                             pageSize={pageSize}
@@ -97,10 +97,24 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
             ) : selectedArea ? (
                 <p>No data available for this area.</p>
             ) : (
-                <div style={{ textAlign: "center", padding: "50px" }}>
-                    <h1>Welcome to Water Quality Dashboard</h1>
+                <div
+                    style={{
+                        textAlign: "center",
+                        // padding: "50px",
+                        backgroundImage: "url('background_imag.jpg')",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        width: "100%",
+                        height: "100%",
+                        // color: "white",
+                        textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
+                    }}
+                >
+                    <h1 style = {{padding: "0", margin: "0"}}>Welcome to Water Quality Dashboard</h1>
                     <p>Select an area from the sidebar to view detailed water quality information.</p>
                 </div>
+
             )}
         </div>
     );
