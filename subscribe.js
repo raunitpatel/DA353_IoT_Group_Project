@@ -38,22 +38,23 @@ async function insertIntoSQL(data) {
     try {
         const query = `
             INSERT INTO water_quality (
-                area, areaname, ph, turbidity, watertemperature, 
+                area, areaname, block, ph, turbidity, watertemperature, 
                 totaldissolvedsolids, conductivity, chlorine, fluoride, target
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         `;
 
         const values = [
-            data["area"], 
-            data["areaname"], 
-            data["ph"], 
-            data["turbidity"], 
-            data["watertemperature"], 
-            data["totaldissolvedsolids"], 
-            data["conductivity"], 
-            data["chlorine"], 
-            data["fluoride"], 
-            data["target"]
+            data.area, 
+            data.areaname, 
+            data.block, 
+            parseFloat(data.ph), 
+            parseFloat(data.turbidity), 
+            parseFloat(data.watertemperature), 
+            parseFloat(data.totaldissolvedsolids), 
+            parseFloat(data.conductivity), 
+            parseFloat(data.chlorine), 
+            parseFloat(data.fluoride), 
+            parseFloat(data.target)
         ];
 
         await pgClient.query(query, values);

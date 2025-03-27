@@ -128,16 +128,18 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                 <div
                     style={{
                         textAlign: "center",
+                        // padding: "50px",
                         backgroundImage: "url('background_imag.jpg')",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",
                         width: "100%",
                         height: "100%",
+                        // color: "white",
                         textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
                     }}
                 >
-                    <h1 style={{ padding: "0", margin: "0" }}>Welcome to Water Quality Dashboard</h1>
+                    <h1 style = {{padding: "0", margin: "0"}}>Welcome to Water Quality Dashboard</h1>
                     <p>Select an area from the sidebar to view detailed water quality information.</p>
                 </div>
             )}
