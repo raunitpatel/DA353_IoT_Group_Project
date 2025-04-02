@@ -4,6 +4,8 @@ import paho.mqtt.client as mqtt
 import psycopg2
 import os
 from dotenv import load_dotenv
+from data_validation import valid_data
+from predict import predict
 
 load_dotenv()  
 
@@ -27,8 +29,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     json_string = message.payload.decode().replace("'", '"')  
     data = json.loads(json_string)
-    print("✅ Parsed Data:", data)
-    insert_into_db(data)
+    if valid_data(data):
+        y_pred = predict(data)
+        data['target'] = y_pred
+        insert_into_db(data)
+        print("✅ Parsed Data:", data)
+    
 
 def insert_into_db(data):
     try:
@@ -57,6 +63,8 @@ def insert_into_db(data):
 
         pg_cursor.execute(query, values)
         pg_conn.commit()
+        pg_cursor.close()
+        pg_conn.close()
         print("✅ Data successfully inserted into NeonSQL.")
 
     except Exception as e:
