@@ -9,7 +9,7 @@ def valid_data(data: dict) -> bool:
     Returns:
         bool: True if data is valid, False otherwise.
     """
-    req_features = ["area", "areaname", "block", "ph", "turbidity", "watertemperature", 
+    req_features = ["timestamp","area", "areaname", "block", "ph", "turbidity", "watertemperature", 
                     "totaldissolvedsolids", "conductivity", "chlorine", "fluoride"]
 
     # Check for required features
@@ -20,9 +20,8 @@ def valid_data(data: dict) -> bool:
         return False
 
     ml_features = ["ph", "turbidity", "watertemperature", 
-                   "totaldissolvedsolids", "conductivity", "chlorine", "fluoride"]
+                "totaldissolvedsolids", "conductivity", "chlorine", "fluoride"]
 
-    # Validate that ML features can be converted to float
     try:
         for col in ml_features:
             float(data[col])

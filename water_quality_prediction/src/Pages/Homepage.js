@@ -22,18 +22,26 @@ function Homepage() {
     // Fetch water quality data when an area is selected
     useEffect(() => {
         if (selectedArea && selectedAreaName) {
-            fetch("http://127.0.0.1:5000/data", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ area: selectedArea, areaName: selectedAreaName }),
-            })
-                .then((res) => res.json())
-                .then((data) => setAreaData(data))
-                .catch((err) => console.error("Error fetching data:", err));
+            const fetchData = () => {
+                fetch("http://127.0.0.1:5000/data", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ area: selectedArea, areaName: selectedAreaName }),
+                })
+                    .then((res) => res.json())
+                    .then((data) => setAreaData(data))
+                    .catch((err) => console.error("Error fetching data:", err));
+            };
+
+            fetchData(); // Fetch once immediately
+            const interval = setInterval(fetchData, 5000); // Fetch every 5 seconds
+
+            return () => clearInterval(interval); // Cleanup when component unmounts or area changes
         }
     }, [selectedArea, selectedAreaName]);
+
 
     return (
         <div>

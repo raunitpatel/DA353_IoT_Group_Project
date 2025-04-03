@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Pagination, Select } from "antd";
 import Plot from "react-plotly.js";
-import RainEffect from "./RainEffect";
+// import RainEffect from "./RainEffect";
 
 function Center({ selectedArea, selectedAreaName, areaData }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,13 +13,13 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     ];
 
     const standards = {
-        ph: { min: 7.0, max: 8.5 },
+        ph: { min: 6.5, max: 8.5 },
         chlorine: { min: 0.2, max: 4.0 },
         fluoride: { min: 0.5, max: 1.5 },
-        conductivity: { min: 0, max: 1000 },
-        turbidity: { min: 0, max: 5 },
-        totaldissolvedsolids: { min: 0, max: 500 },
-        watertemperature: { min: 5, max: 35 }
+        conductivity: { min: 50, max: 1500 },
+        turbidity: { min: 1, max: 5 },
+        totaldissolvedsolids: { min: 500, max: 1000 },
+        watertemperature: { min: 77, max: 86 }
     };
 
     const filteredData = areaData.map(row =>
@@ -28,25 +28,69 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
 
     const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
     const uniqueBlocks = [...new Set(areaData.map(row => row.block))];
+// Step 1: Get all unique timestamps and sort them in ascending order
+const uniqueTimestamps = [...new Set(areaData.map(row => new Date(row.timestamp).toISOString()))]
+    .sort((a, b) => new Date(a) - new Date(b)); // Sorted common X-axis
 
-    const linePlotData = uniqueBlocks.map(block => ({
-        x: areaData.filter(row => row.block === block).map(row => row.timestamp),
-        y: areaData.filter(row => row.block === block).map(row => row[selectedColumn]),
+// Linear interpolation function for missing values
+const interpolate = (data, xValues, selectedColumn) => {
+    const interpolatedY = [];
+    for (let i = 0; i < xValues.length; i++) {
+        const ts = xValues[i];
+        const match = data.find(row => new Date(row.timestamp).toISOString() === ts);
+        
+        if (match) {
+            interpolatedY.push(match[selectedColumn]);
+        } else {
+            // Find nearest known values
+            const prev = data.filter(row => new Date(row.timestamp) < new Date(ts)).pop();
+            const next = data.find(row => new Date(row.timestamp) > new Date(ts));
+            
+            if (prev && next) {
+                // Perform linear interpolation
+                const t1 = new Date(prev.timestamp).getTime();
+                const t2 = new Date(next.timestamp).getTime();
+                const v1 = prev[selectedColumn];
+                const v2 = next[selectedColumn];
+                const t = new Date(ts).getTime();
+                
+                // Interpolate value using weighted average
+                const interpolatedValue = v1 + ((v2 - v1) * ((t - t1) / (t2 - t1)));
+                interpolatedY.push(interpolatedValue);
+            } else {
+                // If no previous or next, use closest known value
+                interpolatedY.push(prev ? prev[selectedColumn] : (next ? next[selectedColumn] : 0));
+            }
+        }
+    }
+    return interpolatedY;
+};
+
+// Step 2: Create line plot data for each block
+const linePlotData = uniqueBlocks.map(block => {
+    const blockData = areaData.filter(row => row.block === block);
+
+    return {
+        x: uniqueTimestamps, // Common x-axis for all blocks
+        y: interpolate(blockData, uniqueTimestamps, selectedColumn), // Interpolated values
         mode: "lines",
         name: block
-    }));
+    };
+});
 
-    const bubblePlotData = areaData.map(row => ({
-        x: row.timestamp.split(" ")[0],
-        y: row[selectedColumn],
-        mode: "markers",
-        marker: {
-            size: row.totaldissolvedsolids / 10,
-            color: uniqueBlocks.indexOf(row.block),
-            opacity: 0.7
-        },
-        name: row.block
-    }));
+
+const groupedBarChartData = uniqueBlocks.map(block => {
+    const blockData = areaData.filter(row => row.block === block);
+
+    return {
+        x: uniqueTimestamps, // Common x-axis for all blocks
+        y: interpolate(blockData, uniqueTimestamps, selectedColumn), // Interpolated values
+        type: "bar",
+        name: block
+    };
+});  
+
+    
 
     // Adding standard min and max reference lines
     const standardLines = standards[selectedColumn] ? [
@@ -86,15 +130,23 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                             <Plot
                                 data={[...linePlotData, ...standardLines]}
                                 layout={{ title: "Water Quality Trends", xaxis: { title: "Timestamp" }, yaxis: { title: selectedColumn } }}
-                                style={{ width: "100%", height: "400px" }}
                             />
                         </div>
-                        <div style={{ width: "48%", paddingLeft: "20px" }}>
+                        <div style={{ width: "50%",  }}>
                             <h3 style={{ textAlign: "center" }}>Animated Time-Series Bubble Chart</h3>
                             <Plot
-                                data={bubblePlotData}
-                                layout={{ title: "Water Quality Changes", xaxis: { title: "Timestamp" }, yaxis: { title: selectedColumn } }}
-                                style={{ width: "100%", height: "400px" }}
+                                data={[...groupedBarChartData,...standardLines]}
+                                layout={{
+                                    barmode: "group",  // Groups bars for different blocks
+                                    xaxis: {
+                                        title: "Timestamp",
+                                        tickangle: -90,
+                                    },
+                                    yaxis: {
+                                        title: selectedColumn,
+                                    },
+                                    
+                                }}
                             />
                         </div>
                     </div>
@@ -137,7 +189,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                         textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
                     }}
                 >
-                    <RainEffect></RainEffect>
+                    {/* <RainEffect></RainEffect> */}
                     <h1 style={{ padding: "0", margin: "0", fontSize: "2.5rem", fontWeight: "bold" }}>
                         Welcome to Water Quality Dashboard
                     </h1>
@@ -233,38 +285,36 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
 
 
                     <div class="contributors-container">
-        <h3 class="contributors-heading">Contributors</h3>
-        
-        <div class="contributors-list">
-           
-            <div class="contributor-card">
-                <img src="background_imag.jpg" alt="Raunit Patel" class="contributor-image" />
-                <p class="contributor-name">Raunit Patel</p>
-                <p class="contributor-institute">IIT Guwahati</p>
-            </div>
+                        <h3 class="contributors-heading">Contributors</h3>
 
-           
-            <div class="contributor-card">
-                <img src="background_imag.jpg" alt="Mohit Yadav" class="contributor-image"/>
-                <p class="contributor-name">Mohit Yadav</p>
-                <p class="contributor-institute">IIT Guwahati</p>
-            </div>
+                        <div class="contributors-list">
 
-            <div class="contributor-card">
-                <img src="background_imag.jpg" alt="Ravi Teja" class="contributor-image"/>
-                <p class="contributor-name">Ravi Teja</p>
-                <p class="contributor-institute">IIT Guwahati</p>
-            </div>
-
-            <div class="contributor-card">
-                <img src="background_imag.jpg" alt="Sahil Raj" class="contributor-image"/>
-                <p class="contributor-name">Sahil Raj</p>
-                <p class="contributor-institute">IIT Guwahati</p>
-            </div>
-        </div>
-    </div>
+                            <div class="contributor-card">
+                                <img src="background_imag.jpg" alt="Raunit Patel" class="contributor-image" />
+                                <p class="contributor-name">Raunit Patel</p>
+                                <p class="contributor-institute">IIT Guwahati</p>
+                            </div>
 
 
+                            <div class="contributor-card">
+                                <img src="background_imag.jpg" alt="Mohit Yadav" class="contributor-image" />
+                                <p class="contributor-name">Mohit Yadav</p>
+                                <p class="contributor-institute">IIT Guwahati</p>
+                            </div>
+
+                            <div class="contributor-card">
+                                <img src="background_imag.jpg" alt="Ravi Teja" class="contributor-image" />
+                                <p class="contributor-name">Ravi Teja</p>
+                                <p class="contributor-institute">IIT Guwahati</p>
+                            </div>
+
+                            <div class="contributor-card">
+                                <img src="background_imag.jpg" alt="Sahil Raj" class="contributor-image" />
+                                <p class="contributor-name">Sahil Raj</p>
+                                <p class="contributor-institute">IIT Guwahati</p>
+                            </div>
+                        </div>
+                    </div>
 
 
 
@@ -272,7 +322,9 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
 
 
 
-                    
+
+
+
 
                 </div>
 

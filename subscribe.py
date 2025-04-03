@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from data_validation import valid_data
 from predict import predict
 
+
+
 load_dotenv()  
 
 pg_conn = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode='require')
@@ -29,12 +31,15 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     json_string = message.payload.decode().replace("'", '"')  
     data = json.loads(json_string)
-    if valid_data(data):
+    if(valid_data(data)):
+        print("✅ Data is valid")
         y_pred = predict(data)
-        data['target'] = y_pred
+        data["target"] = y_pred
         insert_into_db(data)
-        print("✅ Parsed Data:", data)
-    
+
+
+
+
 
 def insert_into_db(data):
     try:
@@ -63,6 +68,8 @@ def insert_into_db(data):
 
         pg_cursor.execute(query, values)
         pg_conn.commit()
+
+
         print("✅ Data successfully inserted into NeonSQL.")
 
     except Exception as e:
