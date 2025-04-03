@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Table, Pagination, Select } from "antd";
 import Plot from "react-plotly.js";
+import RainEffect from "./RainEffect";
 
 function Center({ selectedArea, selectedAreaName, areaData }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -128,20 +129,154 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                 <div
                     style={{
                         textAlign: "center",
-                        // padding: "50px",
-                        backgroundImage: "url('background_imag.jpg')",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
+                        minHeight: "130vh",
                         width: "100%",
                         height: "100%",
-                        // color: "white",
+                        color: "white",
+                        padding: "30px",
                         textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
                     }}
                 >
-                    <h1 style = {{padding: "0", margin: "0"}}>Welcome to Water Quality Dashboard</h1>
-                    <p>Select an area from the sidebar to view detailed water quality information.</p>
+                    <RainEffect></RainEffect>
+                    <h1 style={{ padding: "0", margin: "0", fontSize: "2.5rem", fontWeight: "bold" }}>
+                        Welcome to Water Quality Dashboard
+                    </h1>
+                    <h2 style={{ marginTop: "10px", fontSize: "1.8rem", fontStyle: "italic" }}>
+                        "Is Your Water as Pure as It Should Be?"
+                    </h2>
+
+                    {/* Image below the tagline */}
+                    <img
+                        src="\background_imag.jpg"
+                        alt="Water Purity"
+                        style={{
+                            width: "50%",
+                            maxWidth: "500px",
+                            marginTop: "15px",
+                            borderRadius: "10px",
+                            boxShadow: "2px 4px 6px rgba(0,0,0,0.3)"
+                        }}
+                    />
+
+                    <p style={{ fontSize: "1.2rem", marginTop: "10px" }}>
+                        Select an area from the sidebar to view detailed water quality information.
+                    </p>
+
+
+
+                    <div class="cards">
+                        <div class="row">
+                            <article class="card">
+                                <img src="https://media.istockphoto.com/id/1470724451/vector/ph-scale-meter-for-acidic-and-alkaline-solutions-acid-base-balance-scale-chemical-test.jpg?s=612x612&w=0&k=20&c=dRlBWm1xfWTiJYCPlQOwO3wDMaiT2lblOCwKjsxLFaM=" alt="pH Levels" />
+                                <div class="card-content">
+                                    <header><h2>pH Level</h2></header>
+                                    <p>- The pH scale measures acidity and alkalinity, ranging from 0 to 14, with 7 being neutral. </p>
+                                    <br />
+                                    <p>- Regulatory bodies like the World Health Organization (WHO) and the Environmental Protection Agency (EPA) recommend a pH range of 6.5 to 8.5 for drinking water.  </p>
+                                </div>
+                            </article>
+
+                            <article class="card">
+                                <img src="https://freeup.world/wp-content/uploads/2021/07/Trubidity-1.png" alt="Turbidity" />
+                                <div class="card-content">
+                                    <header><h2>Turbidity</h2></header>
+                                    <p>Determines water clarity based on suspended solids.</p>
+                                </div>
+                            </article>
+
+                            <article class="card">
+                                <img src="https://source.unsplash.com/300x200/?oxygen" alt="Dissolved Oxygen" />
+                                <div class="card-content">
+                                    <header><h2>Dissolved Oxygen (DO)</h2></header>
+                                    <p>Essential for aquatic life, influenced by pollution.</p>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div class="row">
+                            <article class="card">
+                                <img src="https://source.unsplash.com/300x200/?conductivity" alt="Conductivity" />
+                                <div class="card-content">
+                                    <header><h2>Conductivity</h2></header>
+                                    <p>Indicates dissolved salts and mineral content.</p>
+                                </div>
+                            </article>
+
+                            <article class="card">
+                                <img src="https://source.unsplash.com/300x200/?nitrate" alt="Nitrate" />
+                                <div class="card-content">
+                                    <header><h2>Nitrate</h2></header>
+                                    <p>Reflects agricultural runoff and industrial waste.</p>
+                                </div>
+                            </article>
+
+                            <article class="card">
+                                <img src="https://source.unsplash.com/300x200/?hardness" alt="Water Hardness" />
+                                <div class="card-content">
+                                    <header><h2>Water Hardness</h2></header>
+                                    <p>Defined by calcium & magnesium levels.</p>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div class="row">
+                            <article class="card">
+                                <img src="https://source.unsplash.com/300x200/?bod" alt="Biochemical Oxygen Demand (BOD)" />
+                                <div class="card-content">
+                                    <header><h2>Biochemical Oxygen Demand (BOD)</h2></header>
+                                    <p>Measures oxygen needed for organic matter breakdown.</p>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+
+
+                    <div class="contributors-container">
+        <h3 class="contributors-heading">Contributors</h3>
+        
+        <div class="contributors-list">
+           
+            <div class="contributor-card">
+                <img src="background_imag.jpg" alt="Raunit Patel" class="contributor-image" />
+                <p class="contributor-name">Raunit Patel</p>
+                <p class="contributor-institute">IIT Guwahati</p>
+            </div>
+
+           
+            <div class="contributor-card">
+                <img src="background_imag.jpg" alt="Mohit Yadav" class="contributor-image"/>
+                <p class="contributor-name">Mohit Yadav</p>
+                <p class="contributor-institute">IIT Guwahati</p>
+            </div>
+
+            <div class="contributor-card">
+                <img src="background_imag.jpg" alt="Ravi Teja" class="contributor-image"/>
+                <p class="contributor-name">Ravi Teja</p>
+                <p class="contributor-institute">IIT Guwahati</p>
+            </div>
+
+            <div class="contributor-card">
+                <img src="background_imag.jpg" alt="Sahil Raj" class="contributor-image"/>
+                <p class="contributor-name">Sahil Raj</p>
+                <p class="contributor-institute">IIT Guwahati</p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+                    
+
                 </div>
+
+
             )}
         </div>
     );
