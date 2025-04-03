@@ -63,8 +63,6 @@ def insert_into_db(data):
 
         pg_cursor.execute(query, values)
         pg_conn.commit()
-        pg_cursor.close()
-        pg_conn.close()
         print("✅ Data successfully inserted into NeonSQL.")
 
     except Exception as e:
