@@ -22,6 +22,7 @@ function Homepage() {
     // Fetch water quality data when an area is selected
     useEffect(() => {
         if (selectedArea && selectedAreaName) {
+            
             const fetchData = () => {
                 fetch("http://127.0.0.1:5000/data", {
                     method: "POST",
@@ -36,7 +37,7 @@ function Homepage() {
             };
 
             fetchData(); // Fetch once immediately
-            const interval = setInterval(fetchData, 5000); // Fetch every 5 seconds
+            const interval = setInterval(fetchData, 10000); // Fetch every 5 seconds
 
             return () => clearInterval(interval); // Cleanup when component unmounts or area changes
         }
