@@ -38,6 +38,65 @@ The system features an interactive web dashboard that visualizes current water q
 - react
 - MicroPython firmware for ESP32
 
+### ⚙️ Installation
+
+Follow these steps to set up the project locally:
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   ```
+
+2. **Navigate to the Project Directory**
+
+   ```bash
+   cd your-repo-name
+   ```
+
+3. **Create a Virtual Environment (Optional but Recommended)**
+
+   ```bash
+   python -m venv venv
+   # Activate the environment
+   source venv/bin/activate      # macOS/Linux
+   venv\Scripts\activate         # Windows
+   ```
+
+4. **Install Python Dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Navigate to the Frontend Folder and Install Node Modules**
+
+   ```bash
+   cd water_quality_prediction
+   npm install
+   ```
+
+6. **Start the Frontend**
+
+   ```bash
+   npm start
+   ```
+
+7. **In a Separate Terminal, Start the Flask Server**
+
+   ```bash
+   cd server
+   python app.py
+   ```
+
+8. **In Another Terminal, Run Publisher and Subscriber Scripts**
+
+   ```bash
+   python publish.py
+   python subscribe.py
+   ```
+
+
 ### Data Generation and modelling
 
 Navigate to the IOT_project_modelling.ipynb and run the script to generate synthetic data and get models and scalers:
