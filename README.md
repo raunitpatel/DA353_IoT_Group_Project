@@ -12,7 +12,7 @@ The system features an interactive web dashboard that visualizes current water q
 - *Synthetic Data Generation*: Simulates realistic water quality parameters (pH, turbidity, chlorine levels, TDS, conductivity, fluoride content, and water temperature) for multiple campus locations, accounting for variations based on building type and location.
 - *MQTT Communication*: Employs the Mosquitto MQTT broker for efficient and reliable data transmission from M5Stack devices to the server.
 - *Real-time Processing*: Continuously monitors the MQTT topics to process incoming data immediately as it's published by the M5Stack devices.
-- *Web Dashboard*: A user-friendly interface that displays current water quality metrics, safety status, and historical trends for each campus location.
+- *Web Dashboard*: A user-friendly interface that displays current water quality metrics, safety status, and historical trends for campus location.
 - *ML-based Safety Classification*: Implements a machine learning model to analyze water quality parameters and predict water potability, providing immediate safety assessments for each location.
 - *Location-based Filtering*: Enables users to view and analyze water quality data by specific hostels, blocks, or academic areas across the campus.
 
@@ -29,12 +29,12 @@ The system features an interactive web dashboard that visualizes current water q
 ### Prerequisites
 
 - Python
-- Flask
 - pandas
 - numpy
 - scikit-learn
 - paho-mqtt
-- matplotlib
+- ploty
+- react
 - MicroPython firmware for ESP32
 
 ### Data Generation and modelling
