@@ -45,13 +45,13 @@ Follow these steps to set up the project locally:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/raunitpatel/DA353_IoT_Group_Project.git
    ```
 
 2. **Navigate to the Project Directory**
 
    ```bash
-   cd your-repo-name
+   cd DA353_IoT_Group_Project
    ```
 
 3. **Create a Virtual Environment (Optional but Recommended)**
