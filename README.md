@@ -19,9 +19,9 @@ The system features an interactive web dashboard that visualizes current water q
 ## Project Structure
 
 - Ml_Notebooks: contain Model training and model weights.
-- server: Flask application handling data reception, storage, and visualization.
+- server: Flask application handling data reception, storage, and predications.
 - src/: Contains all frontend files including HTML, CSS, and JavaScript.
-- publish.py: Simulates data publishing from IoT sensors (random data generation for testing purposes).
+- publish.py: Simulates data publishing from IoT sensors (random data generation for testing purposes) and send to server.
 - subscrbie.py: Subscribes to the published data, feeds it into the model, and performs predictions.
 
 ## Getting Started
