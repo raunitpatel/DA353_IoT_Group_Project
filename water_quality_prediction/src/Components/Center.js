@@ -32,7 +32,7 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
         turbidity: '(NTU)',
         watertemperature: '(°C)',
         target: ''
-      };
+    };
 
     const filteredData = areaData.map(row =>
         Object.fromEntries(Object.entries(row).filter(([key]) => requiredColumns.includes(key)))
@@ -42,9 +42,9 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
     const uniqueBlocks = [...new Set(areaData.map(row => row.block))];
     const getStandardLines = (col) => {
         if (!standards[col]) return [];
-    
+
         const { min, max } = standards[col];
-    
+
         return [
             {
                 type: "line",
@@ -74,185 +74,185 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
             }
         ];
     };
-    
 
-        const renderPlots = () => {
-            const plots = [];
-        
-            const getBlockData = (col, latestOnly = false) =>
-                uniqueBlocks.map(blockName => {
-                    let rows = areaData
-                        .filter(row => row.block === blockName && row[col] !== undefined && row[col] !== null)
-                        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                    if (latestOnly) rows = rows.slice(-20);
-                    return { blockName, rows };
-                });
-        
-            // 1. Violin for chlorine & fluoride
-            ["chlorine", "fluoride"].forEach(col => {
-                const traces = getBlockData(col).map(({ blockName, rows }) => ({
-                    y: rows.map(r => parseFloat(r[col])),
-                    type: "violin",
-                    name: blockName,
-                    box: { visible: true },
-                }));
-        
-                plots.push(
-                    <div key={col} style={{ width: "48%", margin: "1%" }}>
-                        <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
-                        <Plot
-                            data={traces}
-                            layout={{ margin: { t: 40 }, yaxis: { title: col }, shapes: getStandardLines(col) }}
-                            useResizeHandler
-                            style={{ width: "100%", height: "300px" }}
-                        />
-                    </div>
-                );
-            });
-        
-            // 2. Line for conductivity (all rows)
-            ["conductivity"].forEach(col => {
-                const traces = getBlockData(col, true).map(({ blockName, rows }) => ({
-                    x: rows.map(r => new Date(r.timestamp).toISOString()),
-                    y: rows.map(r => parseFloat(r[col])),
-                    type: "scatter",
-                    mode: "lines+markers",
-                    name: blockName,
-                }));
-        
-                plots.push(
-                    <div key={col} style={{ width: "48%", margin: "1%" }}>
-                        <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
-                        <Plot
-                            data={traces}
-                            layout={{
-                                xaxis: { title: "Timestamp", type: "date" },
-                                yaxis: { title: col },
-                                margin: { t: 40 },
-                                shapes: getStandardLines(col)
-                            }}
-                            useResizeHandler
-                            style={{ width: "100%", height: "300px" }}
-                        />
-                    </div>
-                );
-            });
-            
-        
-            // 3. Box for ph & totaldissolvedsolids
-            ["ph", "totaldissolvedsolids"].forEach(col => {
-                const traces = getBlockData(col).map(({ blockName, rows }) => ({
-                    y: rows.map(r => parseFloat(r[col])),
-                    type: "box",
-                    name: blockName,
-                }));
-        
-                plots.push(
-                    <div key={col} style={{ width: "48%", margin: "1%" }}>
-                        <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
-                        <Plot
-                            data={traces}
-                            layout={{ margin: { t: 40 }, yaxis: { title: col } , shapes: getStandardLines(col)}}
-                            useResizeHandler
-                            style={{ width: "100%", height: "300px" }}
-                        />
-                    </div>
-                );
-            });
-        
-            // 4. Line for turbidity & watertemperature (latest 20 only)
-            ["turbidity", "watertemperature"].forEach(col => {
-                const traces = getBlockData(col, true).map(({ blockName, rows }) => ({
-                    x: rows.map(r => new Date(r.timestamp).toISOString()),
-                    y: rows.map(r => parseFloat(r[col])),
-                    type: "scatter",
-                    mode: "lines+markers",
-                    name: blockName,
-                }));
-        
-                plots.push(
-                    <div key={col} style={{ width: "48%", margin: "1%" }}>
-                        <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
-                        <Plot
-                            data={traces}
-                            layout={{
-                                xaxis: { title: "Timestamp", type: "date" },
-                                yaxis: { title: col },
-                                margin: { t: 40 },
-                                shapes: getStandardLines(col)
-                            }}
-                            useResizeHandler
-                            style={{ width: "100%", height: "300px" }}
-                        />
-                    </div>
-                );
-            });
-        
-            // 5. Gauge for target (all blocks together)
-            
-            const renderGaugeChart = () => {
-                return (
-                    <div style={{ width: '100%', marginTop: '30px' }}>
-                        <h3 style={{ textAlign: 'center', marginBottom: '5px' }}>
-                            Average Water Quality Value (last 20 readings)
-                        </h3>
-                        <p style={{ textAlign: 'center', fontSize: '14px', color: '#666', marginBottom: '20px' }}>
-                            Closer to <strong>100</strong> indicates better water quality
-                        </p>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            {uniqueBlocks.map((blockName, idx) => {
-                                const blockRows = areaData
-                                    .filter(row => row.block === blockName && row.target !== undefined && row.target !== null)
-                                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-                                    .slice(-20);
-            
-                                const values = blockRows.map(row => parseFloat(row.target)).filter(v => !isNaN(v));
-                                const avg = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-            
-                                return (
-                                    <div key={blockName} style={{ width: '400px', margin: '10px' }}>
-                                        <h5 style={{ textAlign: 'center' }}>{blockName}</h5>
-                                        <GaugeChart
-                                            id={`gauge-${idx}`}
-                                            nrOfLevels={100}
 
-                                            percent={avg}
-                                            animate={false}
-                                            arcPadding={0}
-                                            arcWidth={0.3}
-                                            colors={["#ff4d4f", "#fadb14", "#52c41a"]} // Red to Green
-                                            needleColor="#000"
-                                            needleBaseColor="#000"
-                                            textColor="#333"
-                                        />
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
-            };
-            
-            
-            
-            plots.push(renderGaugeChart());
+    const renderPlots = () => {
+        const plots = [];
 
-        
-            // Render in rows of 2
-            const rows = [];
-            for (let i = 0; i < plots.length; i += 2) {
-                rows.push(
-                    <div key={i} style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
-                        {plots[i]}
-                        {plots[i + 1] || <div style={{ width: "48%" }} />}
+        const getBlockData = (col, latestOnly = false) =>
+            uniqueBlocks.map(blockName => {
+                let rows = areaData
+                    .filter(row => row.block === blockName && row[col] !== undefined && row[col] !== null)
+                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                if (latestOnly) rows = rows.slice(-20);
+                return { blockName, rows };
+            });
+
+        // 1. Violin for chlorine & fluoride
+        ["chlorine", "fluoride"].forEach(col => {
+            const traces = getBlockData(col).map(({ blockName, rows }) => ({
+                y: rows.map(r => parseFloat(r[col])),
+                type: "violin",
+                name: blockName,
+                box: { visible: true },
+            }));
+
+            plots.push(
+                <div key={col} style={{ width: "48%", margin: "1%" }}>
+                    <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
+                    <Plot
+                        data={traces}
+                        layout={{ margin: { t: 40 }, yaxis: { title: col }, shapes: getStandardLines(col) }}
+                        useResizeHandler
+                        style={{ width: "100%", height: "300px" }}
+                    />
+                </div>
+            );
+        });
+
+        // 2. Line for conductivity (all rows)
+        ["conductivity"].forEach(col => {
+            const traces = getBlockData(col, true).map(({ blockName, rows }) => ({
+                x: rows.map(r => new Date(r.timestamp).toISOString()),
+                y: rows.map(r => parseFloat(r[col])),
+                type: "scatter",
+                mode: "lines+markers",
+                name: blockName,
+            }));
+
+            plots.push(
+                <div key={col} style={{ width: "48%", margin: "1%" }}>
+                    <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
+                    <Plot
+                        data={traces}
+                        layout={{
+                            xaxis: { title: "Timestamp", type: "date" },
+                            yaxis: { title: col },
+                            margin: { t: 40 },
+                            shapes: getStandardLines(col)
+                        }}
+                        useResizeHandler
+                        style={{ width: "100%", height: "300px" }}
+                    />
+                </div>
+            );
+        });
+
+
+        // 3. Box for ph & totaldissolvedsolids
+        ["ph", "totaldissolvedsolids"].forEach(col => {
+            const traces = getBlockData(col).map(({ blockName, rows }) => ({
+                y: rows.map(r => parseFloat(r[col])),
+                type: "box",
+                name: blockName,
+            }));
+
+            plots.push(
+                <div key={col} style={{ width: "48%", margin: "1%" }}>
+                    <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
+                    <Plot
+                        data={traces}
+                        layout={{ margin: { t: 40 }, yaxis: { title: col }, shapes: getStandardLines(col) }}
+                        useResizeHandler
+                        style={{ width: "100%", height: "300px" }}
+                    />
+                </div>
+            );
+        });
+
+        // 4. Line for turbidity & watertemperature (latest 20 only)
+        ["turbidity", "watertemperature"].forEach(col => {
+            const traces = getBlockData(col, true).map(({ blockName, rows }) => ({
+                x: rows.map(r => new Date(r.timestamp).toISOString()),
+                y: rows.map(r => parseFloat(r[col])),
+                type: "scatter",
+                mode: "lines+markers",
+                name: blockName,
+            }));
+
+            plots.push(
+                <div key={col} style={{ width: "48%", margin: "1%" }}>
+                    <h4 style={{ textAlign: "center" }}>{col.toUpperCase()}</h4>
+                    <Plot
+                        data={traces}
+                        layout={{
+                            xaxis: { title: "Timestamp", type: "date" },
+                            yaxis: { title: col },
+                            margin: { t: 40 },
+                            shapes: getStandardLines(col)
+                        }}
+                        useResizeHandler
+                        style={{ width: "100%", height: "300px" }}
+                    />
+                </div>
+            );
+        });
+
+        // 5. Gauge for target (all blocks together)
+
+        const renderGaugeChart = () => {
+            return (
+                <div style={{ width: '100%', marginTop: '30px' }}>
+                    <h3 style={{ textAlign: 'center', marginBottom: '5px' }}>
+                        Average Water Quality Value (last 20 readings)
+                    </h3>
+                    <p style={{ textAlign: 'center', fontSize: '14px', color: '#666', marginBottom: '20px' }}>
+                        Closer to <strong>100</strong> indicates better water quality
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {uniqueBlocks.map((blockName, idx) => {
+                            const blockRows = areaData
+                                .filter(row => row.block === blockName && row.target !== undefined && row.target !== null)
+                                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                                .slice(-20);
+
+                            const values = blockRows.map(row => parseFloat(row.target)).filter(v => !isNaN(v));
+                            const avg = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+
+                            return (
+                                <div key={blockName} style={{ width: '400px', margin: '10px' }}>
+                                    <h5 style={{ textAlign: 'center' }}>{blockName}</h5>
+                                    <GaugeChart
+                                        id={`gauge-${idx}`}
+                                        nrOfLevels={100}
+
+                                        percent={avg}
+                                        animate={false}
+                                        arcPadding={0}
+                                        arcWidth={0.3}
+                                        colors={["#ff4d4f", "#fadb14", "#52c41a"]} // Red to Green
+                                        needleColor="#000"
+                                        needleBaseColor="#000"
+                                        textColor="#333"
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
-                );
-            }
-        
-            return rows;
+                </div>
+            );
         };
-        
-        
+
+
+
+        plots.push(renderGaugeChart());
+
+
+        // Render in rows of 2
+        const rows = [];
+        for (let i = 0; i < plots.length; i += 2) {
+            rows.push(
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
+                    {plots[i]}
+                    {plots[i + 1] || <div style={{ width: "48%" }} />}
+                </div>
+            );
+        }
+
+        return rows;
+    };
+
+
 
     return (
         <div style={{ height: "85vh", overflowY: "auto", overflowX: "auto", width: "100%" }}>
@@ -306,7 +306,14 @@ function Center({ selectedArea, selectedAreaName, areaData }) {
                         <h4>Expected Value: ≤ 5NTU</h4>
                         <p>Indicates the presence of suspended particles in water.</p>
                     </section>
-                    <section className="card item3"></section>
+                    <section className="card item3">
+                    </section>
+
+
+
+
+
+
                     <section className="card item4"></section>
                     <section className="card item5">
                         <h3>Water Temperature</h3>

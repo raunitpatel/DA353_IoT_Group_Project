@@ -18,7 +18,9 @@
 body::-webkit-scrollbar {
   display: none;
 }
-
+body {
+	background-color: #b3bfc8; /* Example: light blue background */
+  }
 html {
   scroll-behavior: smooth;
 }
@@ -99,7 +101,7 @@ a{
 }
 .grid .item3 {
   grid-area: 4 / 1 / 5 / 4;
-  background-color: #267fb3;
+  background-color: #3f9bd0;
 }
 .grid .item4 {
   grid-area: 1 / 3 / 2 / 5;
@@ -194,6 +196,10 @@ a{
 	background-repeat: no-repeat;
 
   }
+  
+
+  
+  
 
 .grid h2 {
 	font-size: 1em;
