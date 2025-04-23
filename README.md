@@ -18,17 +18,18 @@ The system features an interactive web dashboard that visualizes current water q
 
 ## Project Structure
 
-- main.py: MicroPython code for ESP32 devices to publish data via MQTT.
-- app.py: Flask application handling data reception, storage, and visualization.
-- models/: Pre-trained machine learning models for anomaly detection.
-- scalers/: Pre-trained scalers for scaling inputs.
-- templates/: Contains index.html frontend page for the website.
+- Ml_Notebooks: contain Model training and model weights.
+- server: Flask application handling data reception, storage, and visualization.
+- src/: Contains all frontend files including HTML, CSS, and JavaScript.
+- publish.py: Simulates data publishing from IoT sensors (random data generation for testing purposes).
+- subscrbie.py: Subscribes to the published data, feeds it into the model, and performs predictions.
 
 ## Getting Started
 
 ### Prerequisites
 
 - Python
+- flask
 - pandas
 - numpy
 - scikit-learn
